@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+from rich import print
 
 import re
 from collections import OrderedDict, defaultdict
@@ -45,9 +45,9 @@ class DragenCoveragePerContig(BaseMultiqcModule):
             name="Coverage per contig",
             anchor="dragen-coverage-per-contig",
             description="""
-            Average coverage per contig or chromosome. 
-            Calculated as the number of bases (excluding duplicate marked reads, reads 
-            with MAPQ=0, and clipped bases), divided by the length of the contig or 
+            Average coverage per contig or chromosome.
+            Calculated as the number of bases (excluding duplicate marked reads, reads
+            with MAPQ=0, and clipped bases), divided by the length of the contig or
             (if a target bed is used) the total length of the target region spanning that contig.
             """,
             plot=linegraph.plot(
@@ -69,8 +69,8 @@ class DragenCoveragePerContig(BaseMultiqcModule):
                 name="Coverage per contig (non-main)",
                 anchor="dragen-coverage-per-nonmain-contig",
                 description="""
-                Non-main contigs: 
-                unlocalized (*_random), unplaced (chrU_*), alts (*_alt), mitochondria (chrM), EBV, HLA. 
+                Non-main contigs:
+                unlocalized (*_random), unplaced (chrU_*), alts (*_alt), mitochondria (chrM), EBV, HLA.
                 Zoom in to see more contigs as all labels don\'t fit the screen.
                 """,
                 plot=linegraph.plot(

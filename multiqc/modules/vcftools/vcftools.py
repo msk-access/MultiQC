@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from vcftools """
 
-from __future__ import print_function
+from rich import print
 import logging
 from multiqc.modules.base_module import BaseMultiqcModule
 from .relatedness2 import Relatedness2Mixin

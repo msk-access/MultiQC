@@ -3,7 +3,7 @@
 """ MultiQC submodule to parse output from Rockhopper summary files
 https://cs.wellesley.edu/~btjaden/Rockhopper/ """
 
-from __future__ import print_function
+from rich import print
 import logging
 import re
 from collections import OrderedDict

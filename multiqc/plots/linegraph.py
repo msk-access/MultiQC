@@ -2,7 +2,8 @@
 
 """ MultiQC functions to plot a linegraph """
 
-from __future__ import print_function, division
+from __future__ import division
+from rich import print
 from collections import OrderedDict
 import base64
 import inspect

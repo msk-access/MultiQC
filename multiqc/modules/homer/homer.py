@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """ MultiQC module to parse output from HOMER """
-from __future__ import print_function
+from rich import print
 from collections import OrderedDict
 import logging
 

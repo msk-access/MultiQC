@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import print_function
+from rich import print
 
 import re
 from collections import defaultdict
@@ -48,8 +48,8 @@ class DragenFragmentLength(BaseMultiqcModule):
             name="Fragment length hist",
             anchor="dragen-fragment-length-histogram",
             description="""
-            Distribution of estimated fragment lengths of mapped reads per read group. 
-            Only points supported by at least {} reads are shown to prevent long flat tail. 
+            Distribution of estimated fragment lengths of mapped reads per read group.
+            Only points supported by at least {} reads are shown to prevent long flat tail.
             The plot is also smoothed down to showing 300 points on the X axis to reduce noise.
             """.format(
                 MIN_CNT_TO_SHOW_ON_PLOT

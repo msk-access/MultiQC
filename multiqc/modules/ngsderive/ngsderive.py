@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from ngsderive """
 
-from __future__ import print_function
+from rich import print
 import csv
 import io
 import logging

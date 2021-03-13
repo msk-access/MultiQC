@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
-from __future__ import print_function
+from rich import print
 
 import itertools
 import re
@@ -56,17 +56,17 @@ class DragenCoverageMetrics(BaseMultiqcModule):
             name="Coverage metrics",
             anchor="dragen-cov-metrics",
             description="""
-            Coverage metrics over a region (where the region can be a target region, 
+            Coverage metrics over a region (where the region can be a target region,
             a QC coverage region, or the whole genome). Press the `Help` button for details.
             """,
             helptext="""
             The following criteria are used when calculating coverage:
-            
+
             * Duplicate reads and clipped bases are ignored.
             * Only reads with `MAPQ` > `min MAPQ` and bases with `BQ` > `min BQ` are considered
-            
+
             Considering only bases usable for variant calling, _i.e._ excluding:
-            
+
             1. Clipped bases
             2. Bases in duplicate reads
             3. Reads with `MAPQ` < `min MAPQ` (default `20`)

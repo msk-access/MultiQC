@@ -2,7 +2,7 @@
 
 """ MultiQC modules base class, contains helper functions """
 
-from __future__ import print_function
+from rich import print
 from collections import OrderedDict
 import io
 import fnmatch

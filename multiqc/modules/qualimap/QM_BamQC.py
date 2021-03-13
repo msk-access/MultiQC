@@ -2,7 +2,7 @@
 
 """ MultiQC Submodule to parse output from Qualimap BamQC """
 
-from __future__ import print_function
+from rich import print
 import logging
 import math
 import re

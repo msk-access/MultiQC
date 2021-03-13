@@ -7,7 +7,7 @@ The main function to run MultiQC. Sorry about the messy namespace.
 Primarily called by multiqc.__main__.py
 Imported by __init__.py so available as multiqc.run()
 """
-from __future__ import print_function
+from rich import print
 
 import base64
 import click
@@ -18,10 +18,13 @@ import io
 import jinja2
 import os
 import re
+import rich
+import rich.traceback
 import shutil
 import subprocess
 import sys
 import tempfile
+import textwrap
 import time
 import traceback
 
@@ -621,17 +624,25 @@ def run(
             sys.exit(1)
         except:
             # Flag the error, but carry on
-            logger.error(
-                "Oops! The '{}' MultiQC module broke... \n".format(this_module)
-                + "  Please copy the following traceback and report it at "
-                + "https://github.com/ewels/MultiQC/issues \n"
-                + "  If possible, please include a log file that triggers the error - "
-                + "the last file found was:\n"
-                + "    {}\n".format(report.last_found_file)
-                + ("=" * 60)
-                + "\nModule {} raised an exception: {}".format(this_module, traceback.format_exc())
-                + ("=" * 60)
+            console = rich.console.Console(stderr=True)
+            exception_msg = textwrap.dedent(
+                f"""
+                Please copy the MultiQC log and report it at: https://github.com/ewels/MultiQC/issues
+
+                [italic]Please attach a log file that triggers the error![/] This helps to reproduce the problem.
+                The last file found was: '{report.last_found_file}'
+                """
             )
+            console.print(
+                rich.panel.Panel(
+                    exception_msg,
+                    title=f"[red bold]Oops! The '{this_module}' MultiQC module broke...",
+                    border_style="red bold",
+                    width=100,
+                    highlight=True,
+                )
+            )
+            console.print(rich.traceback.Traceback(extra_lines=0))
             sys_exit_code = 1
         report.runtimes["mods"][run_module_names[mod_idx]] = time.time() - mod_starttime
     report.runtimes["total_mods"] = time.time() - total_mods_starttime

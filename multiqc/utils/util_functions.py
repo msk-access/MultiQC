@@ -2,7 +2,7 @@
 
 """ MultiQC Utility functions, used in a variety of places. """
 
-from __future__ import print_function
+from rich import print
 import io
 import json
 import os

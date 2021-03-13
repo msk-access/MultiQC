@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from pychopper """
 
-from __future__ import print_function
+from rich import print
 import logging
 import os
 from collections import OrderedDict
@@ -98,7 +98,7 @@ class MultiqcModule(BaseMultiqcModule):
             ),
             helptext=(
                 """
-                Nanopore cDNA reads are always read forward. To estimate their original strand, 
+                Nanopore cDNA reads are always read forward. To estimate their original strand,
                 Pychopper searches for the location of the start and end primers and assigns the reads accordingly.
                 """
             ),

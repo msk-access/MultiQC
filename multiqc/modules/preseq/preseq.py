@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from Preseq """
 
-from __future__ import print_function
+from rich import print
 import logging
 import numpy as np
 from collections import OrderedDict

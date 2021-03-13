@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from Slamdunk """
 
-from __future__ import print_function
+from rich import print
 import logging
 import re
 from collections import OrderedDict

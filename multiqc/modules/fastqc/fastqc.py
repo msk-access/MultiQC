@@ -10,7 +10,7 @@
 #### Have a look at Kallisto for a simpler example.     ####
 ############################################################
 
-from __future__ import print_function
+from rich import print
 from collections import OrderedDict
 import io
 import json

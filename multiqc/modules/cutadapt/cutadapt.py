@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from Cutadapt """
 
-from __future__ import print_function
+from rich import print
 from collections import OrderedDict
 from distutils.version import StrictVersion
 import logging

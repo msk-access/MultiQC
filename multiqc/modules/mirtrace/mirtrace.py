@@ -3,7 +3,7 @@
 
 """ MultiQC module to parse output files from miRTrace """
 
-from __future__ import print_function
+from rich import print
 from collections import OrderedDict
 import logging
 

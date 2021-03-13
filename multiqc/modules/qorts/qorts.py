@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from QoRTs """
 
-from __future__ import print_function
+from rich import print
 from collections import OrderedDict
 import re
 import os

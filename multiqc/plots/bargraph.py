@@ -2,7 +2,7 @@
 
 """ MultiQC functions to plot a bargraph """
 
-from __future__ import print_function
+from rich import print
 import base64
 from collections import OrderedDict
 import inspect

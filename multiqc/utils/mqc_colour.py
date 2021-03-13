@@ -3,7 +3,7 @@
 Helper functions to manipulate colours and colour scales
 """
 
-from __future__ import print_function
+from rich import print
 import spectra
 import numpy as np
 import re

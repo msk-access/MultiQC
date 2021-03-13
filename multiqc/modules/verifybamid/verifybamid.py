@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from VerifyBAMID """
 
-from __future__ import print_function
+from rich import print
 from collections import OrderedDict
 import logging
 from multiqc import config

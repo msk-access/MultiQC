@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from Samblaster """
 
-from __future__ import print_function
+from rich import print
 import os
 from collections import OrderedDict
 import logging

@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse results from jellyfish  """
 
-from __future__ import print_function
+from rich import print
 
 import logging
 from multiqc.plots import linegraph

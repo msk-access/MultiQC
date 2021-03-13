@@ -1,4 +1,4 @@
-from __future__ import print_function
+from rich import print
 from io import open
 import argparse
 import logging

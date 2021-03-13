@@ -2,7 +2,7 @@
 
 """ MultiQC code to export data to MegaQC / flat JSON files """
 
-from __future__ import print_function
+from rich import print
 import gzip
 import io
 import json

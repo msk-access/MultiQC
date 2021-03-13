@@ -2,7 +2,7 @@
 
 """ Core MultiQC module to parse output from custom script output """
 
-from __future__ import print_function
+from rich import print
 import base64
 from collections import defaultdict, OrderedDict
 import logging

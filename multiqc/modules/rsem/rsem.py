@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from RSEM/rsem-calculate-expression """
 
-from __future__ import print_function
+from rich import print
 import logging
 from collections import OrderedDict
 

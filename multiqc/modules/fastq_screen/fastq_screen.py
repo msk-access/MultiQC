@@ -2,7 +2,7 @@
 
 """ MultiQC module to parse output from FastQ Screen """
 
-from __future__ import print_function
+from rich import print
 from collections import OrderedDict
 import json
 import logging
