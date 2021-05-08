@@ -448,6 +448,9 @@ picard/gcbias:
 picard/hsmetrics:
   contents: "HsMetrics"
   shared: true
+picard/hsmetrics_per_target_coverage:
+  fn: "*_per_target_coverage.txt"
+  shared: true
 picard/insertsize:
   contents: "InsertSizeMetrics"
   shared: true

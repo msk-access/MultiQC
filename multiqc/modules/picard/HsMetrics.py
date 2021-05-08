@@ -7,6 +7,7 @@ import logging
 import os
 import re
 
+import numpy as np
 from multiqc import config
 from multiqc.plots import table, linegraph
 
@@ -181,6 +182,9 @@ def parse_reports(self):
         self.add_section(
             name=tbases["name"], anchor=tbases["anchor"], description=tbases["description"], plot=tbases["plot"]
         )
+
+        _parse_target_coverage(self)
+
         hs_pen_plot = hs_penalty_plot(data)
         if hs_pen_plot is not None:
             self.add_section(
@@ -295,6 +299,95 @@ def _get_table_headers(data):
                 headers[h]["hidden"] = True
 
     return headers
+
+
+def _parse_target_coverage(self):
+    """Parse the per target coverage info"""
+
+    parsed_data = dict()
+    self.picard_target_cov_data = dict()
+
+    # Go through logs and find Metrics
+    per_target_cov_files = self.find_log_files("picard/hsmetrics_per_target_coverage", filehandles=True)
+    non_numeric_headers = ['chrom', 'start', 'end', 'length', 'name']
+
+    for f in per_target_cov_files:
+        try:
+            s_name = f['s_name'].replace('_per_target_coverage', '')
+
+            if s_name in parsed_data:
+                log.debug("Duplicate sample name found {}!".format(s_name))
+            self.add_data_source(f, s_name, section="HsMetrics")
+
+            parsed_data[s_name] = dict()
+            headers = []
+
+            for line in f["f"]:
+                if 'chrom' in line:
+                    headers = line.strip().split('\t')
+                    parsed_data[s_name] = {header: [] for header in headers}
+                    continue
+
+                vals = line.strip().split('\t')
+
+                for i, val in enumerate(vals):
+                    if headers[i] not in non_numeric_headers:
+                        parsed_data[s_name][headers[i]].append(float(val))
+                    else:
+                        parsed_data[s_name][headers[i]].append(val)
+        except AssertionError:
+            pass
+
+    parsed_data = self.ignore_samples(parsed_data)
+    numeric_headers = list(set(headers).difference(set(['chrom', 'start', 'end', 'length', 'name', '%gc'])))
+    gc_intervals = np.arange(0, 1, 0.05)
+
+    for s_name, s_data in parsed_data.items():
+        self.picard_target_cov_data[s_name] = {i: [] for i in numeric_headers}
+        self.picard_target_cov_data[s_name]['%gc'] = [round(i, 2) for i in gc_intervals.tolist()]
+        gc_binned = np.digitize(parsed_data[s_name]['%gc'], gc_intervals) - 1
+
+        for header in numeric_headers:
+            for bin_index in range(len(gc_intervals)):
+                vals = np.array(parsed_data[s_name][header])
+                vals_avg = vals[gc_binned == bin_index].mean()
+                self.picard_target_cov_data[s_name][header].append(vals_avg)
+
+    pdata = {}
+    for s_name, s_data in self.picard_target_cov_data.items():
+        pdata[s_name] = dict(zip(s_data['%gc'], s_data['normalized_coverage']))
+
+
+    if len(self.picard_target_cov_data) > 0:
+
+        # Write parsed data to a file
+        self.write_data_file(self.picard_target_cov_data, "multiqc_picard_target_coverage")
+
+        # Plot the data and add section
+        pconfig = {
+            "id": "picard_target_coverage",
+            "title": "Picard: GC Bias Metrics",
+            "ylab": "Normalied coverage",
+            "xlab": "GC Bias",
+            "tt_label": "<b>%GC {point.x}</b>: {point.y:.2f}",
+        }
+
+        # build list of linegraphs
+        # linegraph_data = [{}, {}, {}, {}, {}]
+        # for s_name, cycles in self.picard_target_cov_data.items():
+        #     reformat_items = lambda n: {cycle: tup[n] for cycle, tup in cycles.items()}
+        #     for lg, index in zip(linegraph_data, range(5)):
+        #         lg[s_name] = reformat_items(index)
+
+        self.add_section(
+            name="Target GC Bias Metrics",
+            anchor="picard_target_gc_bias_metrics",
+            description="Plot shows coverage metrics vs GC bias.",
+            plot=linegraph.plot(pdata, pconfig),
+        )
+
+    # Return the number of detected samples to the parent module
+    return len(self.picard_target_cov_data)
 
 
 def _add_target_bases(data):
