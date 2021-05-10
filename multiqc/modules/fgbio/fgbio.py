@@ -6,6 +6,7 @@ from multiqc.modules.base_module import BaseMultiqcModule
 
 from .groupreadsbyumi import GroupReadsByUmiMixin
 from . import ErrorRateByReadPosition
+from . import CollectDuplexSeqMetrics
 
 
 # Initialise the logger
@@ -45,6 +46,11 @@ class MultiqcModule(BaseMultiqcModule, GroupReadsByUmiMixin):
         n["errorratebyreadposition"] = ErrorRateByReadPosition.parse_reports(self)
         if n["errorratebyreadposition"] > 0:
             log.info("Found {} errorratebyreadposition reports".format(n["errorratebyreadposition"]))
+
+        # CollectDuplexSeqMetrics
+        n["collectduplexseqmetrics"] = CollectDuplexSeqMetrics.parse_reports(self)
+        if n["collectduplexseqmetrics"] > 0:
+            log.info("Found {} collectduplexseqmetrics reports".format(n["collectduplexseqmetrics"]))
 
         # Exit if we didn't find anything
         if sum(n.values()) == 0:
