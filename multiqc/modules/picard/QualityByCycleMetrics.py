@@ -21,7 +21,13 @@ def parse_reports(self):
     all_data = read_histogram(self, "picard/quality_by_cycle", "MeanQualityByCycle", headers, formats)
 
     if not all_data:
-        return 0
+
+        headers = ["CYCLE", "MEAN_QUALITY", "MEAN_ORIGINAL_QUALITY"]
+        formats = [int, float, float]
+        all_data = read_histogram(self, "picard/quality_by_cycle", "MeanQualityByCycle", headers, formats)
+
+        if not all_data:
+            return 0
 
     # Write parsed data to a file
     self.write_data_file(all_data, "multiqc_picard_quality_by_cycle")
