@@ -23,7 +23,7 @@ jobs:
         # for Docker Hub, as well as the name of the image itself
         id: prep
         run: |
-          DOCKER_IMAGE=ghcr.io/msk-access/MultiQC
+          DOCKER_IMAGE=ghcr.io/msk-access/multiqc
           VERSION=noop
           if [ "${{ github.event_name }}" = "schedule" ]; then
             VERSION=nightly
