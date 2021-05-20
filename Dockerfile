@@ -13,7 +13,3 @@ WORKDIR /usr/src/multiqc
 
 # Install MultiQC
 RUN python -m pip install .
-
-# Set up entrypoint and cmd for easy docker usage
-ENTRYPOINT [ "multiqc" ]
-CMD [ "." ]
