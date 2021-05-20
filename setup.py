@@ -69,7 +69,7 @@ install_requires = [
 ]
 
 setup(
-    name="multiqc",
+    name="multiqc-msk",
     version=version,
     author="Phil Ewels",
     author_email="phil.ewels@scilifelab.se",
