@@ -21,6 +21,9 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel build twine
           pip install .
 
+      - name: Build the distribution
+        run: python setup.py sdist bdist_wheel
+
       - name: Publish MultiQC-MSK to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
