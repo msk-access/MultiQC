@@ -170,7 +170,7 @@ def parse_reports(self):
                 "min": 0,
                 "suffix": "%",
                 "format": "{:,.0f}",
-                "scale": "RdYlGn",
+                "scale": "Blues",
                 "modify": lambda x: self.multiply_hundred(x),
             }
         for s_name in data:
@@ -272,7 +272,7 @@ def _get_table_headers(data):
             headers[h] = {
                 "title": h_title.strip().lower().capitalize(),
                 "description": FIELD_DESCRIPTIONS[h] if h in FIELD_DESCRIPTIONS else None,
-                "scale": "RdYlGn",
+                "scale": "Blues",
                 "min": 0,
                 "namespace": "HsMetrics",
             }
