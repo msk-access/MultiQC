@@ -56,6 +56,7 @@ install_requires = [
     "networkx" + networkx_version,
     "numpy" + numpy_version,
     "click",
+    "scipy",
     "coloredlogs",
     "future>0.14.0",
     "jinja2" + jinja2_version,

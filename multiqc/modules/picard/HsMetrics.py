@@ -8,6 +8,7 @@ import os
 import re
 
 import numpy as np
+from scipy.stats import gaussian_kde
 from multiqc import config
 from multiqc.plots import table, linegraph
 
@@ -356,10 +357,17 @@ def _parse_target_coverage(self):
 
 
         self.picard_target_cov_data[s_name]['normalized_coverage'] = {'coverage': [], 'frequency': []}
-        res = np.histogram(parsed_data[s_name]['normalized_coverage'], bins=150, range=(0, 2.5), density=True)
+        # res = np.histogram(parsed_data[s_name]['normalized_coverage'], bins=150, range=(0, 2.5), density=True)
+        # self.picard_target_cov_data[s_name]['normalized_coverage']['coverage'] = res[1][0:len(res[0])]
+        # self.picard_target_cov_data[s_name]['normalized_coverage']['frequency'] = res[0]
 
-        self.picard_target_cov_data[s_name]['normalized_coverage']['coverage'] = res[1][0:len(res[0])]
-        self.picard_target_cov_data[s_name]['normalized_coverage']['frequency'] = res[0]
+        gkde = gaussian_kde(parsed_data[s_name]['normalized_coverage'])
+        # gkde.set_bandwidth(bw_method=gkde.factor*2)
+        coverage = np.arange(0, 2.5, 0.05)
+        frequency = gkde.evaluate(coverage)
+        self.picard_target_cov_data[s_name]['normalized_coverage']['coverage'] = coverage.tolist()
+        self.picard_target_cov_data[s_name]['normalized_coverage']['frequency'] = frequency.tolist()
+
 
 
     pdata_gc_bias = {}
