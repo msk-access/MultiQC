@@ -363,7 +363,7 @@ def _parse_target_coverage(self):
 
         gkde = gaussian_kde(parsed_data[s_name]['normalized_coverage'])
         # gkde.set_bandwidth(bw_method=gkde.factor*2)
-        coverage = np.arange(0, 2.5, 0.05)
+        coverage = np.arange(0, 2.5, 0.01)
         frequency = gkde.evaluate(coverage)
         self.picard_target_cov_data[s_name]['normalized_coverage']['coverage'] = coverage.tolist()
         self.picard_target_cov_data[s_name]['normalized_coverage']['frequency'] = frequency.tolist()
