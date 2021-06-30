@@ -15,3 +15,6 @@ WORKDIR /usr/src/multiqc
 RUN pip install --upgrade pip && pip install --no-cache-dir scipy
 RUN python -m pip install .
 CMD ["/bin/bash"]
+
+ENV LC_ALL en_US.utf-8
+ENV LANG en_US.utf-8
