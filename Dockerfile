@@ -13,6 +13,9 @@ WORKDIR /usr/src/multiqc
 
 ENV LC_ALL en_US.utf-8
 ENV LANG en_US.utf-8
+ENV PYTHONIOENCODING utf-8
+ENV LC_ALL=en_US.utf-8
+ENV LANG=en_US.utf-8
 ENV PYTHONIOENCODING=utf-8
 
 RUN apt-get -qq update && \
@@ -27,10 +30,16 @@ RUN python -m pip install .
 
 ENV LC_ALL en_US.utf-8
 ENV LANG en_US.utf-8
+ENV PYTHONIOENCODING utf-8
+ENV LC_ALL=en_US.utf-8
+ENV LANG=en_US.utf-8
 ENV PYTHONIOENCODING=utf-8
 
 CMD ["/bin/bash"]
 
 ENV LC_ALL en_US.utf-8
 ENV LANG en_US.utf-8
+ENV PYTHONIOENCODING utf-8
+ENV LC_ALL=en_US.utf-8
+ENV LANG=en_US.utf-8
 ENV PYTHONIOENCODING=utf-8
