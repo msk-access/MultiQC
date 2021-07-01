@@ -17,12 +17,11 @@ ENV PYTHONIOENCODING utf-8
 ENV LC_ALL=en_US.utf-8
 ENV LANG=en_US.utf-8
 ENV PYTHONIOENCODING=utf-8
-
-RUN apt-get -qq update && \
-    apt-get -q -y upgrade && \
-    apt-get install -y locales
     
-RUN locale-gen en_US.utf-8
+RUN apt-get install -y locales
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/'        /etc/locale.gen \
+ && sed -i -e 's/# pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen \
+ && locale-gen en_US.utf-8
 
 # Install MultiQC
 RUN pip install --upgrade pip && pip install --no-cache-dir scipy
