@@ -13,6 +13,13 @@ WORKDIR /usr/src/multiqc
 
 ENV LC_ALL en_US.utf-8
 ENV LANG en_US.utf-8
+ENV PYTHONIOENCODING=utf-8
+
+RUN apt-get -qq update && \
+    apt-get -q -y upgrade && \
+    apt-get install -y locales
+    
+RUN locale-gen en_US.utf-8
 
 # Install MultiQC
 RUN pip install --upgrade pip && pip install --no-cache-dir scipy
@@ -20,8 +27,10 @@ RUN python -m pip install .
 
 ENV LC_ALL en_US.utf-8
 ENV LANG en_US.utf-8
+ENV PYTHONIOENCODING=utf-8
 
 CMD ["/bin/bash"]
 
 ENV LC_ALL en_US.utf-8
 ENV LANG en_US.utf-8
+ENV PYTHONIOENCODING=utf-8
