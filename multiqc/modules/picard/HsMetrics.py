@@ -8,6 +8,7 @@ import os
 import re
 
 import numpy as np
+from scipy.stats import gaussian_kde
 from multiqc import config
 from multiqc.plots import table, linegraph
 
@@ -170,7 +171,7 @@ def parse_reports(self):
                 "min": 0,
                 "suffix": "%",
                 "format": "{:,.0f}",
-                "scale": "RdYlGn",
+                "scale": "Blues",
                 "modify": lambda x: self.multiply_hundred(x),
             }
         for s_name in data:
@@ -272,7 +273,7 @@ def _get_table_headers(data):
             headers[h] = {
                 "title": h_title.strip().lower().capitalize(),
                 "description": FIELD_DESCRIPTIONS[h] if h in FIELD_DESCRIPTIONS else None,
-                "scale": "RdYlGn",
+                "scale": "Blues",
                 "min": 0,
                 "namespace": "HsMetrics",
             }
@@ -343,19 +344,40 @@ def _parse_target_coverage(self):
     gc_intervals = np.arange(0, 1, 0.05)
 
     for s_name, s_data in parsed_data.items():
-        self.picard_target_cov_data[s_name] = {i: [] for i in numeric_headers}
-        self.picard_target_cov_data[s_name]['%gc'] = [round(i, 2) for i in gc_intervals.tolist()]
+        self.picard_target_cov_data[s_name] = {}
+        self.picard_target_cov_data[s_name]['gc_bias'] = {i: [] for i in numeric_headers}
+        self.picard_target_cov_data[s_name]['gc_bias']['%gc'] = [round(i, 2) for i in gc_intervals.tolist()]
         gc_binned = np.digitize(parsed_data[s_name]['%gc'], gc_intervals) - 1
 
         for header in numeric_headers:
             for bin_index in range(len(gc_intervals)):
                 vals = np.array(parsed_data[s_name][header])
                 vals_avg = vals[gc_binned == bin_index].mean()
-                self.picard_target_cov_data[s_name][header].append(vals_avg)
+                self.picard_target_cov_data[s_name]['gc_bias'][header].append(vals_avg)
 
-    pdata = {}
+
+        self.picard_target_cov_data[s_name]['normalized_coverage'] = {'coverage': [], 'frequency': []}
+        # res = np.histogram(parsed_data[s_name]['normalized_coverage'], bins=150, range=(0, 2.5), density=True)
+        # self.picard_target_cov_data[s_name]['normalized_coverage']['coverage'] = res[1][0:len(res[0])]
+        # self.picard_target_cov_data[s_name]['normalized_coverage']['frequency'] = res[0]
+
+        gkde = gaussian_kde(parsed_data[s_name]['normalized_coverage'])
+        # gkde.set_bandwidth(bw_method=gkde.factor*2)
+        coverage = np.arange(0, 2.5, 0.01)
+        frequency = gkde.evaluate(coverage)
+        self.picard_target_cov_data[s_name]['normalized_coverage']['coverage'] = coverage.tolist()
+        self.picard_target_cov_data[s_name]['normalized_coverage']['frequency'] = frequency.tolist()
+
+
+
+    pdata_gc_bias = {}
+    pdata_coverage = {}
     for s_name, s_data in self.picard_target_cov_data.items():
-        pdata[s_name] = dict(zip(s_data['%gc'], s_data['normalized_coverage']))
+        pdata_gc_bias[s_name] = dict(zip(s_data['gc_bias']['%gc'], s_data['gc_bias']['normalized_coverage']))
+
+        pdata_coverage[s_name] = dict(zip(
+            s_data['normalized_coverage']['coverage'],
+            s_data['normalized_coverage']['frequency']))
 
 
     if len(self.picard_target_cov_data) > 0:
@@ -363,27 +385,36 @@ def _parse_target_coverage(self):
         # Write parsed data to a file
         self.write_data_file(self.picard_target_cov_data, "multiqc_picard_target_coverage")
 
-        # Plot the data and add section
+        # Plot gc bias data and add section
         pconfig = {
             "id": "picard_target_coverage",
-            "title": "Picard: GC Bias Metrics",
+            "title": "Picard: GC Bias",
             "ylab": "Normalied coverage",
             "xlab": "GC Bias",
             "tt_label": "<b>%GC {point.x}</b>: {point.y:.2f}",
         }
 
-        # build list of linegraphs
-        # linegraph_data = [{}, {}, {}, {}, {}]
-        # for s_name, cycles in self.picard_target_cov_data.items():
-        #     reformat_items = lambda n: {cycle: tup[n] for cycle, tup in cycles.items()}
-        #     for lg, index in zip(linegraph_data, range(5)):
-        #         lg[s_name] = reformat_items(index)
-
         self.add_section(
-            name="Target GC Bias Metrics",
+            name="Target GC Bias",
             anchor="picard_target_gc_bias_metrics",
             description="Plot shows coverage metrics vs GC bias.",
-            plot=linegraph.plot(pdata, pconfig),
+            plot=linegraph.plot(pdata_gc_bias, pconfig),
+        )
+
+        # Plot median normalized coverage distribution data and add section
+        pconfig = {
+            "id": "picard_target_coverage",
+            "title": "Picard: Coverage distribution",
+            "ylab": "Frequency",
+            "xlab": "Coverage (median scaled)",
+            "tt_label": "<b>Coverage {point.x}</b>: {point.y:.2f}",
+        }
+
+        self.add_section(
+            name="Target coverage distribution",
+            anchor="picard_target_coverage_distribution",
+            description="Plot shows the median-normalized coverage distribution over the targets.",
+            plot=linegraph.plot(pdata_coverage, pconfig),
         )
 
     # Return the number of detected samples to the parent module

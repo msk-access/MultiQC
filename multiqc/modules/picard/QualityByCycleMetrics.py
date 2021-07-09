@@ -29,38 +29,79 @@ def parse_reports(self):
         if not all_data:
             return 0
 
-    # Write parsed data to a file
-    self.write_data_file(all_data, "multiqc_picard_quality_by_cycle")
 
-    # Plot the data and add section
-    pconfig = {
-        "id": "picard_quality_by_cycle",
-        "title": "Picard: Mean Base Quality by Cycle",
-        "ylab": "Mean Base Quality",
-        "xlab": "Cycle Number",
-        "xDecimals": False,
-        "tt_label": "<b>cycle {point.x}</b>: {point.y:.2f}",
-        "ymin": 0,
-    }
+        # Write parsed data to a file
+        self.write_data_file(all_data, "multiqc_picard_quality_by_cycle")
 
-    lg = {}
-    for s_name in all_data:
-        lg[s_name] = dict((cycle, data["MEAN_QUALITY"]) for cycle, data in all_data[s_name].items())
+        # Plot the data and add section
+        pconfig = {
+            "id": "picard_quality_by_cycle",
+            "title": "Picard: Mean Base Quality by Cycle",
+            "ylab": "Mean Base Quality",
+            "xlab": "Cycle Number",
+            "xDecimals": False,
+            "tt_label": "<b>cycle {point.x}</b>: {point.y:.2f}",
+            "ymin": 0,
+            "data_labels": [
+                {"name": "Mean quality", "ylab": "Mean quality"},
+                {"name": "Original mean quality", "ylab": "Mean quality"}
+            ]
+        }
 
-    self.add_section(
-        name="Mean Base Quality by Cycle",
-        anchor="picard-quality-by-cycle",
-        description="Plot shows the mean base quality by cycle.",
-        helptext="""
-        This metric gives an overall snapshot of sequencing machine performance.
-        For most types of sequencing data, the output is expected to show a slight
-        reduction in overall base quality scores towards the end of each read.
+        lg = [{}, {}]
+        for s_name in all_data:
+            lg[0][s_name] = dict((cycle, data["MEAN_QUALITY"]) for cycle, data in all_data[s_name].items())
+            lg[1][s_name] = dict(
+                (cycle, data["MEAN_ORIGINAL_QUALITY"]) for cycle, data in all_data[s_name].items())
 
-        Spikes in quality within reads are not expected and may indicate that technical
-        problems occurred during sequencing.
-        """,
-        plot=linegraph.plot([lg], pconfig),
-    )
+        self.add_section(
+            name="Mean Base Quality by Cycle",
+            anchor="picard-quality-by-cycle",
+            description="Plot shows the mean base quality by cycle.",
+            helptext="""
+            This metric gives an overall snapshot of sequencing machine performance.
+            For most types of sequencing data, the output is expected to show a slight
+            reduction in overall base quality scores towards the end of each read.
+
+            Spikes in quality within reads are not expected and may indicate that technical
+            problems occurred during sequencing.
+            """,
+            plot=linegraph.plot(lg, pconfig),
+        )
+    else:
+
+        # Write parsed data to a file
+        self.write_data_file(all_data, "multiqc_picard_quality_by_cycle")
+
+        # Plot the data and add section
+        pconfig = {
+            "id": "picard_quality_by_cycle",
+            "title": "Picard: Mean Base Quality by Cycle",
+            "ylab": "Mean Base Quality",
+            "xlab": "Cycle Number",
+            "xDecimals": False,
+            "tt_label": "<b>cycle {point.x}</b>: {point.y:.2f}",
+            "ymin": 0,
+        }
+
+        lg = {}
+        for s_name in all_data:
+            lg[s_name] = dict((cycle, data["MEAN_QUALITY"]) for cycle, data in all_data[s_name].items())
+
+        self.add_section(
+            name="Mean Base Quality by Cycle",
+            anchor="picard-quality-by-cycle",
+            description="Plot shows the mean base quality by cycle.",
+            helptext="""
+            This metric gives an overall snapshot of sequencing machine performance.
+            For most types of sequencing data, the output is expected to show a slight
+            reduction in overall base quality scores towards the end of each read.
+
+            Spikes in quality within reads are not expected and may indicate that technical
+            problems occurred during sequencing.
+            """,
+            plot=linegraph.plot([lg], pconfig),
+        )
 
     # Return the number of detected samples to the parent module
     return len(all_data)
