@@ -40,11 +40,11 @@ class MultiqcModule(BaseMultiqcModule):
             parsed_data = self.parse_peddy_summary(f)
             if parsed_data is not None:
                 for s_name in parsed_data:
-                    s_name = self.clean_s_name(s_name, f["root"])
+                    cleaned_s_name = self.clean_s_name(s_name, f)
                     try:
-                        self.peddy_data[s_name].update(parsed_data[s_name])
+                        self.peddy_data[cleaned_s_name].update(parsed_data[s_name])
                     except KeyError:
-                        self.peddy_data[s_name] = parsed_data[s_name]
+                        self.peddy_data[cleaned_s_name] = parsed_data[s_name]
 
         # parse peddy CSV files
         for pattern in ["het_check", "ped_check", "sex_check"]:
@@ -136,7 +136,7 @@ class MultiqcModule(BaseMultiqcModule):
                         return None
             else:
                 s_name = "-".join([s[idx] for idx in s_name_idx])
-                s_name = self.clean_s_name(s_name, f["root"])
+                s_name = self.clean_s_name(s_name, f)
                 parsed_data[s_name] = dict()
                 for i, v in enumerate(s):
                     if i not in s_name_idx:

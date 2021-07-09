@@ -15,11 +15,15 @@ Supported commands:
 
 - `AlignmentSummaryMetrics`
 - `BaseDistributionByCycle`
+- `CollectIlluminaBasecallingMetrics`
+- `CollectIlluminaLaneMetrics`
 - `CrosscheckFingerprints`
+- `ExtractIlluminaBarcodes`
 - `GcBiasMetrics`
 - `HsMetrics`
 - `InsertSizeMetrics`
 - `MarkDuplicates`
+- `MarkIlluminaAdapters`
 - `OxoGMetrics`
 - `QualityByCycleMetrics`
 - `QualityScoreDistributionMetrics`
@@ -106,6 +110,13 @@ MultiQC config values, with the new maximum number of points:
 ```yaml
 picard_config:
   insertsize_smooth_points: 10000
+```
+
+The plotted maximum insert size can be set with:
+
+```yaml
+picard_config:
+  insertsize_xmax: 10000
 ```
 
 #### MarkDuplicates
