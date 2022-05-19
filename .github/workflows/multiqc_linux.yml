@@ -23,7 +23,7 @@ jobs:
       # Update pip and install beautifulsoup4 for CI tests (CSP checking)
       - name: Install dependencies for CI tests
         run: |
-          python -m pip install --upgrade pip setuptools beautifulsoup4
+          python -m pip install --upgrade pip setuptools beautifulsoup4 scipy
 
       # Install MultiQC
       - name: Install MultiQC

@@ -324,11 +324,11 @@ def _parse_target_coverage(self):
 
     # Go through logs and find Metrics
     per_target_cov_files = self.find_log_files("picard/hsmetrics_per_target_coverage", filehandles=True)
-    non_numeric_headers = ['chrom', 'start', 'end', 'length', 'name']
+    non_numeric_headers = ["chrom", "start", "end", "length", "name"]
 
     for f in per_target_cov_files:
         try:
-            s_name = f['s_name'].replace('_per_target_coverage', '')
+            s_name = f["s_name"].replace("_per_target_coverage", "")
 
             if s_name in parsed_data:
                 log.debug("Duplicate sample name found {}!".format(s_name))
@@ -338,12 +338,12 @@ def _parse_target_coverage(self):
             headers = []
 
             for line in f["f"]:
-                if 'chrom' in line:
-                    headers = line.strip().split('\t')
+                if "chrom" in line:
+                    headers = line.strip().split("\t")
                     parsed_data[s_name] = {header: [] for header in headers}
                     continue
 
-                vals = line.strip().split('\t')
+                vals = line.strip().split("\t")
 
                 for i, val in enumerate(vals):
                     if headers[i] not in non_numeric_headers:
@@ -354,45 +354,41 @@ def _parse_target_coverage(self):
             pass
 
     parsed_data = self.ignore_samples(parsed_data)
-    numeric_headers = list(set(headers).difference(set(['chrom', 'start', 'end', 'length', 'name', '%gc'])))
+    numeric_headers = list(set(headers).difference(set(["chrom", "start", "end", "length", "name", "%gc"])))
     gc_intervals = np.arange(0, 1, 0.05)
 
     for s_name, s_data in parsed_data.items():
         self.picard_target_cov_data[s_name] = {}
-        self.picard_target_cov_data[s_name]['gc_bias'] = {i: [] for i in numeric_headers}
-        self.picard_target_cov_data[s_name]['gc_bias']['%gc'] = [round(i, 2) for i in gc_intervals.tolist()]
-        gc_binned = np.digitize(parsed_data[s_name]['%gc'], gc_intervals) - 1
+        self.picard_target_cov_data[s_name]["gc_bias"] = {i: [] for i in numeric_headers}
+        self.picard_target_cov_data[s_name]["gc_bias"]["%gc"] = [round(i, 2) for i in gc_intervals.tolist()]
+        gc_binned = np.digitize(parsed_data[s_name]["%gc"], gc_intervals) - 1
 
         for header in numeric_headers:
             for bin_index in range(len(gc_intervals)):
                 vals = np.array(parsed_data[s_name][header])
                 vals_avg = vals[gc_binned == bin_index].mean()
-                self.picard_target_cov_data[s_name]['gc_bias'][header].append(vals_avg)
+                self.picard_target_cov_data[s_name]["gc_bias"][header].append(vals_avg)
 
-
-        self.picard_target_cov_data[s_name]['normalized_coverage'] = {'coverage': [], 'frequency': []}
+        self.picard_target_cov_data[s_name]["normalized_coverage"] = {"coverage": [], "frequency": []}
         # res = np.histogram(parsed_data[s_name]['normalized_coverage'], bins=150, range=(0, 2.5), density=True)
         # self.picard_target_cov_data[s_name]['normalized_coverage']['coverage'] = res[1][0:len(res[0])]
         # self.picard_target_cov_data[s_name]['normalized_coverage']['frequency'] = res[0]
 
-        gkde = gaussian_kde(parsed_data[s_name]['normalized_coverage'])
+        gkde = gaussian_kde(parsed_data[s_name]["normalized_coverage"])
         # gkde.set_bandwidth(bw_method=gkde.factor*2)
         coverage = np.arange(0, 2.5, 0.01)
         frequency = gkde.evaluate(coverage)
-        self.picard_target_cov_data[s_name]['normalized_coverage']['coverage'] = coverage.tolist()
-        self.picard_target_cov_data[s_name]['normalized_coverage']['frequency'] = frequency.tolist()
-
-
+        self.picard_target_cov_data[s_name]["normalized_coverage"]["coverage"] = coverage.tolist()
+        self.picard_target_cov_data[s_name]["normalized_coverage"]["frequency"] = frequency.tolist()
 
     pdata_gc_bias = {}
     pdata_coverage = {}
     for s_name, s_data in self.picard_target_cov_data.items():
-        pdata_gc_bias[s_name] = dict(zip(s_data['gc_bias']['%gc'], s_data['gc_bias']['normalized_coverage']))
+        pdata_gc_bias[s_name] = dict(zip(s_data["gc_bias"]["%gc"], s_data["gc_bias"]["normalized_coverage"]))
 
-        pdata_coverage[s_name] = dict(zip(
-            s_data['normalized_coverage']['coverage'],
-            s_data['normalized_coverage']['frequency']))
-
+        pdata_coverage[s_name] = dict(
+            zip(s_data["normalized_coverage"]["coverage"], s_data["normalized_coverage"]["frequency"])
+        )
 
     if len(self.picard_target_cov_data) > 0:
 

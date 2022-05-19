@@ -27,7 +27,7 @@ jobs:
       # Update core packages
       - name: Install dependencies for CI tests
         run: |
-          python -m pip install --upgrade pip setuptools
+          python -m pip install --upgrade pip setuptools scipy
 
       # Install MultiQC
       - name: Install MultiQC

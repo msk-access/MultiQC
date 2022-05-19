@@ -54,11 +54,11 @@ def parse_reports(self):
         linegraph_data_duplex_family_size[1][s_name] = {}
 
         for family_size, family_size_data in s_data.items():
-            linegraph_data_simplex_family_size[0][s_name][family_size] = family_size_data['ss_count']
-            linegraph_data_simplex_family_size[1][s_name][family_size] = family_size_data['ss_fraction']
+            linegraph_data_simplex_family_size[0][s_name][family_size] = family_size_data["ss_count"]
+            linegraph_data_simplex_family_size[1][s_name][family_size] = family_size_data["ss_fraction"]
 
-            linegraph_data_duplex_family_size[0][s_name][family_size] = family_size_data['ds_count']
-            linegraph_data_duplex_family_size[1][s_name][family_size] = family_size_data['ds_fraction']
+            linegraph_data_duplex_family_size[0][s_name][family_size] = family_size_data["ds_count"]
+            linegraph_data_duplex_family_size[1][s_name][family_size] = family_size_data["ds_fraction"]
 
     # build linegraphs for duplex yield metrics
 
@@ -68,14 +68,13 @@ def parse_reports(self):
             linegraph_data_duplex_yield_metrics[i][s_name] = {}
 
         for fraction, fraction_data in s_data.items():
-            linegraph_data_duplex_yield_metrics[6][s_name][fraction] = fraction_data['read_pairs']
-            linegraph_data_duplex_yield_metrics[5][s_name][fraction] = fraction_data['cs_families']
-            linegraph_data_duplex_yield_metrics[4][s_name][fraction] = fraction_data['ss_families']
-            linegraph_data_duplex_yield_metrics[3][s_name][fraction] = fraction_data['ds_families']
-            linegraph_data_duplex_yield_metrics[2][s_name][fraction] = fraction_data['ds_duplexes']
-            linegraph_data_duplex_yield_metrics[1][s_name][fraction] = \
-                fraction_data['ds_fraction_duplexes_ideal']
-            linegraph_data_duplex_yield_metrics[0][s_name][fraction] = fraction_data['ds_fraction_duplexes']
+            linegraph_data_duplex_yield_metrics[6][s_name][fraction] = fraction_data["read_pairs"]
+            linegraph_data_duplex_yield_metrics[5][s_name][fraction] = fraction_data["cs_families"]
+            linegraph_data_duplex_yield_metrics[4][s_name][fraction] = fraction_data["ss_families"]
+            linegraph_data_duplex_yield_metrics[3][s_name][fraction] = fraction_data["ds_families"]
+            linegraph_data_duplex_yield_metrics[2][s_name][fraction] = fraction_data["ds_duplexes"]
+            linegraph_data_duplex_yield_metrics[1][s_name][fraction] = fraction_data["ds_fraction_duplexes_ideal"]
+            linegraph_data_duplex_yield_metrics[0][s_name][fraction] = fraction_data["ds_fraction_duplexes"]
 
     pconfig_duplex_yield_metrics = {
         "id": "fgbio_CollectDuplexSeqMetrics_duplex_yield_metrics",
@@ -93,7 +92,6 @@ def parse_reports(self):
             {"name": "Read pairs", "ylab": "Read pair count"},
         ],
     }
-
 
     # add a section for the plot
     self.add_section(

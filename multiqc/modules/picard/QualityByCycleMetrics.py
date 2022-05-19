@@ -29,7 +29,6 @@ def parse_reports(self):
         if not all_data:
             return 0
 
-
         # Write parsed data to a file
         self.write_data_file(all_data, "multiqc_picard_quality_by_cycle")
 
@@ -44,15 +43,14 @@ def parse_reports(self):
             "ymin": 0,
             "data_labels": [
                 {"name": "Mean quality", "ylab": "Mean quality"},
-                {"name": "Original mean quality", "ylab": "Mean quality"}
-            ]
+                {"name": "Original mean quality", "ylab": "Mean quality"},
+            ],
         }
 
         lg = [{}, {}]
         for s_name in all_data:
             lg[0][s_name] = dict((cycle, data["MEAN_QUALITY"]) for cycle, data in all_data[s_name].items())
-            lg[1][s_name] = dict(
-                (cycle, data["MEAN_ORIGINAL_QUALITY"]) for cycle, data in all_data[s_name].items())
+            lg[1][s_name] = dict((cycle, data["MEAN_ORIGINAL_QUALITY"]) for cycle, data in all_data[s_name].items())
 
         self.add_section(
             name="Mean Base Quality by Cycle",
